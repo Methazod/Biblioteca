@@ -208,13 +208,13 @@ public class BuscarLibro extends JFrame {
         int i = 0;
         for(Libro l : librosSeleccionados){            
             i++;
-            g.drawString(l.titulo, 170, 300+(i*20));
-            g.drawString(l.autor, 320, 300+(i*20));
-            g.drawString(""+l.numero_paginas, 440, 300+(i*20));
-            g.drawString(l.saga, 510, 300+(i*20));
+            g.drawString(l.titulo, 100, 300+(i*20));
+            g.drawString(l.autor, 350, 300+(i*20));
+            g.drawString(""+l.numero_paginas, 500, 300+(i*20));
+            g.drawString(l.saga, 600, 300+(i*20));
         }        
         if(!librosSeleccionados.isEmpty()){
-            librosSeleccionados.clear();          
+            librosSeleccionados.clear();
         }        
     }
     
