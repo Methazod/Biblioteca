@@ -2,14 +2,13 @@ package biblioteca;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.sql.*;
 
 public class InsertarLibro extends JFrame {
     static final int WIDTH = 800;
     static final int HEIGHT = 700;
     JPanel panelAbajo, panelArriba;
-    JButton insertar, atras;
+    JButton insertar, buscar, leido;
     JTextField textNombre, textAutor, textPaginas, textFecha, textSaga;
     JComboBox<String> generos = new JComboBox<>();
     JRadioButton siLeido, noLeido;
@@ -43,13 +42,16 @@ public class InsertarLibro extends JFrame {
         panelAbajo = new JPanel();
         panelAbajo.setBackground(Color.LIGHT_GRAY);
         insertar = new JButton("Insertar Libro");
-        atras = new JButton("Atras");
+        buscar = new JButton("Buscar Libro");
+        leido = new JButton("Cambiar Leido");
 
         insertar.addActionListener(e -> insertarLibro());
-        atras.addActionListener(e -> atras());
+        buscar.addActionListener(e -> buscarLibro());
+        leido.addActionListener(e -> cambiarLeido());
 
         panelAbajo.add(insertar);
-        panelAbajo.add(atras);
+        panelAbajo.add(buscar);
+        panelAbajo.add(leido);
         add(panelAbajo, BorderLayout.SOUTH);
     }
 
@@ -117,37 +119,13 @@ public class InsertarLibro extends JFrame {
         }
     }
     
-    @Override
-    public void paint(Graphics g){                
-        g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(0, 0, WIDTH, HEIGHT);          
-        g.setColor(Color.BLACK);
-        this.paintComponents(g);
+    private void buscarLibro() {
+        dispose();
+        new BuscarLibro();
     }
     
-    private void conectar() {
-        try {
-            conexion = DriverManager.getConnection(jdbc, "root", "root");
-        } catch (SQLException sql) {
-            sql.printStackTrace();
-        }
-    }
-
-    private void cerrar() {
-        try {
-            if (conexion != null) {
-                conexion.close();
-                conexion = null;
-            }
-        } catch (SQLException sql) {
-            sql.printStackTrace();
-        }
-    }
-
-    private void atras() {
-        // Implementar lógica para volver al frame anterior (BuscarLibro)
-        // Podrías simplemente cerrar esta ventana y abrir la de BuscarLibro
+    private void cambiarLeido() {        
         dispose();
-        new BuscarLibro(); // Asumiendo que tienes una clase BuscarLibro con un constructor adecuado
+        new CambiarLeido();
     }
 }

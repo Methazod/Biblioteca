@@ -11,7 +11,7 @@ public class BuscarLibro extends JFrame {
     static final int WIDTH = 800;
     static final int HEIGHT = 700;
     JPanel panelAbajo, panelArriba;
-    JButton buscar, anadir, borrar;
+    JButton buscar, anadir, borrar, leido;
     JComboBox<String> generos = new JComboBox<>();
     JRadioButton largo, corto, si, no, siLeido, noLeido;
     ButtonGroup grupoDuracion, grupoSaga, grupoLeido;
@@ -47,6 +47,7 @@ public class BuscarLibro extends JFrame {
         panelAbajo.setBackground(Color.LIGHT_GRAY);
         buscar = new JButton("Buscar Libro");
         anadir = new JButton("Añadir Libro");
+        leido = new JButton("Cambiar leido");
         borrar = new JButton("Borrar resultados");
 
         buscar.addActionListener(new ActionListener() {
@@ -65,6 +66,14 @@ public class BuscarLibro extends JFrame {
             }
         });
         
+        leido.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                // Borrar los resultados
+                cambiarLeido();
+            }
+        });
+        
         borrar.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
@@ -72,11 +81,12 @@ public class BuscarLibro extends JFrame {
                 librosSeleccionados.clear();
                 repaint();
             }
-        });
+        });                
 
-        panelAbajo.add(buscar);
-        panelAbajo.add(anadir);
+        panelAbajo.add(buscar);        
         panelAbajo.add(borrar);
+        panelAbajo.add(anadir);
+        panelAbajo.add(leido);
         add(panelAbajo, BorderLayout.SOUTH);
     }
 
@@ -197,6 +207,11 @@ public class BuscarLibro extends JFrame {
         new InsertarLibro();
     }
     
+    private void cambiarLeido() {
+        dispose();
+        new CambiarLeido();
+    }
+    
     @Override
     public void paint(Graphics g){        
         if(librosSeleccionados.isEmpty()){            
@@ -205,33 +220,26 @@ public class BuscarLibro extends JFrame {
             g.setColor(Color.BLACK);
             this.paintComponents(g);
         }
-        int i = 0;
-        for(Libro l : librosSeleccionados){            
-            i++;
-            g.drawString(l.titulo, 100, 300+(i*20));
-            g.drawString(l.autor, 350, 300+(i*20));
-            g.drawString(""+l.numero_paginas, 500, 300+(i*20));
-            g.drawString(l.saga, 600, 300+(i*20));
-        }        
+        int posicion = si.isSelected()?obtenerPosicion((int)(Math.random() * librosSeleccionados.size())):(int)(Math.random() * librosSeleccionados.size());
+        
         if(!librosSeleccionados.isEmpty()){
+            g.drawString(librosSeleccionados.get(posicion).titulo, 100, 300);
+            g.drawString(librosSeleccionados.get(posicion).autor, 350, 300);
+            g.drawString(""+librosSeleccionados.get(posicion).numero_paginas, 500, 300);
+            if(librosSeleccionados.get(posicion).saga != null) g.drawString(librosSeleccionados.get(posicion).saga, 600, 300);
+            
             librosSeleccionados.clear();
-        }        
+        }   
     }
     
-    public void conectar() {
-        try {
-            conexion = DriverManager.getConnection(jdbc, "root", "root");
-        } catch (SQLException sql) {
-            sql.printStackTrace();
-        }
-    }
-
-    public void cerrar() {
-        try {
-            if (conexion != null) conexion.close();
-        } catch (SQLException sql) {
-            conexion = null;
-            sql.printStackTrace();
-        }
+    private int obtenerPosicion(int pos){
+        if(pos == 0)
+            return pos;
+        String sagaActual = librosSeleccionados.get(pos).saga;
+        String sagaAnterior = librosSeleccionados.get(pos-1).saga;
+        if(!sagaActual.equals(sagaAnterior))
+            return pos;
+        else
+            return obtenerPosicion(pos-1);
     }
 }

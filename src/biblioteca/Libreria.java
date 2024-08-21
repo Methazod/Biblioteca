@@ -92,6 +92,25 @@ public class Libreria {
         }
     }
     
+    public void cambiarLeido(Libro libro) {
+        conectar();
+        String updateSQL = "UPDATE libro l SET l.leido = true WHERE l.titulo = '"+ libro.titulo + "' AND l.autor = '" + libro.autor + "'";
+        try {
+            Statement statement = conexion.createStatement();             
+            statement.executeUpdate(updateSQL);            
+            statement.close();
+            for(Libro l : libros){
+                if(l.titulo.equals(libro.titulo) && l.autor.equals(libro.autor)){
+                    l.leido = true;
+                }
+            }
+        } catch (SQLException sql) {
+            sql.printStackTrace();
+        } finally {
+            cerrar();
+        }
+    }
+    
     public int ultimoId(){
         return libros.get(libros.size()-1).id_libro;
     }
